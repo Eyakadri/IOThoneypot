@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Honeypot Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Modern, lightweight CSS framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Lightweight world map visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson@3.0.2/dist/topojson.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <span class="icon">
+                    <i class="fas fa-shield-alt"></i>
+                </span>
+                <span class="has-text-weight-bold">IoT Honeypot</span>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-light" id="refresh-btn">
+                            <span class="icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </span>
+                            <span>Refresh</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <section class="section">
+        <div class="container">
+            <!-- Stats overview -->
+            <div class="columns is-multiline">
+                <div class="column is-3">
+                    <div class="box has-background-primary has-text-white">
+                        <div class="level">
+                            <div class="level-left">
+                                <div>
+                                    <p class="heading">Total Connections</p>
+                                    <p class="title has-text-white" id="total-connections">0</p>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <span class="icon is-large">
+                                    <i class="fas fa-plug fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="box has-background-link has-text-white">
+                        <div class="level">
+                            <div class="level-left">
+                                <div>
+                                    <p class="heading">Unique IPs</p>
+                                    <p class="title has-text-white" id="unique-ips">0</p>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <span class="icon is-large">
+                                    <i class="fas fa-globe fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="box has-background-danger has-text-white">
+                        <div class="level">
+                            <div class="level-left">
+                                <div>
+                                    <p class="heading">Attack Attempts</p>
+                                    <p class="title has-text-white" id="attack-attempts">0</p>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <span class="icon is-large">
+                                    <i class="fas fa-skull-crossbones fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="box has-background-success has-text-white">
+                        <div class="level">
+                            <div class="level-left">
+                                <div>
+                                    <p class="heading">Commands Executed</p>
+                                    <p class="title has-text-white" id="commands-executed">0</p>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <span class="icon is-large">
+                                    <i class="fas fa-terminal fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="columns">
+                <div class="column is-8">
+                    <div class="box">
+                        <h3 class="title is-5">Attack Map</h3>
+                        <div id="map-container" style="height: 400px;"></div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="box">
+                        <h3 class="title is-5">Protocol Distribution</h3>
+                        <canvas id="protocol-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-5">Top Usernames</h3>
+                        <canvas id="username-chart"></canvas>
+                    </div>
+                </div>
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-5">Top Passwords</h3>
+                        <canvas id="password-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column is-12">
+                    <div class="box">
+                        <h3 class="title is-5">Recent Events</h3>
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Source IP</th>
+                                        <th>Protocol</th>
+                                        <th>Event Type</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events-table">
+                                    <!-- Events will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>IoT Honeypot Dashboard</strong> - A streamlined security monitoring solution
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

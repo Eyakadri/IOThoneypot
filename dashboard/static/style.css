@@ -1,0 +1,28 @@
+/* Custom styles for the dashboard */
+.navbar-brand .icon {
+    margin-right: 0.5rem;
+}
+
+.box {
+    height: 100%;
+}
+
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#map-container {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .columns {
+        margin-bottom: 0.75rem;
+    }
+    .column {
+        padding: 0.75rem;
+    }
+}
